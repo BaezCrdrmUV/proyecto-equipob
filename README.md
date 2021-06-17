@@ -1,6 +1,6 @@
 # ClienteWebSpotyMe
 Primero correr todos los microservicios y la api con el docker compose de la rama master         
-El cliente esta desarrollado en web y debe correr los siguientes comandos para correrlo 
+El cliente esta desarrollado en web y debe correr los siguientes comandos, dentro de la carpeta SpotyMeWeb en la rama cliente ,para que corra
 en escritorio con electron:            
 		1-electronize init                 
 		2-electronize start                 
