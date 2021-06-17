@@ -90,6 +90,10 @@ INSERT INTO `Accounts`.`Account` (`AccountID`, `Username`, `Email`, `IsUser`, `S
 VALUES ('3f835f14-8111-4a1d-8385-2871743290e6', 'frews', 'zS18012183@estudiantes.uv.mx', 1, 1);
 INSERT INTO `Accounts`.`Account` (`AccountID`, `Username`, `Email`, `IsUser`, `StatusID`) 
 VALUES ('da43f900-890f-469e-90b3-18cdfacce74b', 'pklove', 'zS18012143@estudiantes.uv.mx', 1, 1);
+INSERT INTO `Accounts`.`Account` (`AccountID`, `Username`, `Email`, `IsUser`, `StatusID`) 
+VALUES ('4a86a26e-3c81-4e44-a08c-1210e3bd76d1', 'Pklove345', 'delmanclen@hotmail.com', 1, 1);
+INSERT INTO `Accounts`.`Account` (`AccountID`, `Username`, `Email`, `IsUser`, `StatusID`) 
+VALUES ('65ebc91d-e0f8-47b7-b4ef-726d6578f1be', 'Administrador', 'correoAdmin@hotmail.com', 1, 1);
 
 COMMIT;
 
@@ -104,5 +108,9 @@ INSERT INTO `Accounts`.`Password` (`PasswordID`, `PasswordString`, `OwnerID`)
 VALUES ('796078d1-640a-40a2-83b7-15de3eb1aaae', 'elfrews', '3f835f14-8111-4a1d-8385-2871743290e6');
 INSERT INTO `Accounts`.`Password` (`PasswordID`, `PasswordString`, `OwnerID`) 
 VALUES ('f5770b74-c458-4d29-9b42-c926b78f8973', 'eladmin', 'da43f900-890f-469e-90b3-18cdfacce74b');
+INSERT INTO `Accounts`.`Password` (`PasswordID`, `PasswordString`, `OwnerID`) 
+VALUES ('d0316bb9-1f90-472d-91a8-a6d531bdb073', '-5118730917', '4a86a26e-3c81-4e44-a08c-1210e3bd76d1');
+INSERT INTO `Accounts`.`Password` (`PasswordID`, `PasswordString`, `OwnerID`) 
+VALUES ('627dcc84-c052-462a-a800-5c33ef5564f4', '4105751805', '65ebc91d-e0f8-47b7-b4ef-726d6578f1be');
 
 COMMIT;
