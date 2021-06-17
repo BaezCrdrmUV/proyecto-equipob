@@ -77,23 +77,16 @@ class MicroservicioPubliclibrary
     }
 
     async RejectSong(songId){
-        let url = urlMS + "/Song/RejectSong";
-        return axios.put(url, {
-            params:{
-                songId : songId
-            }
-        })
+        let url = urlMS + "/Song/RejectSong?songId="+ songId;
+        return axios.put(url)
         .then(response => {return response.data})
         .catch(error => {return error.response.data})
     }
 
     async ApproveSong(songId){
-        let url = urlMS + "/Song/ApproveSong";
-        return axios.put(url, {
-            params:{
-                songId : songId
-            }
-        })
+
+        let url = urlMS + "/Song/ApproveSong?songId="+songId;
+        return axios.put(url)
         .then(response => {return response.data})
         .catch(error => {return error.response.data})
     }

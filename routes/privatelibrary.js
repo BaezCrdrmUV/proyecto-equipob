@@ -4,9 +4,9 @@ import { microservicioPrivatelibrary } from '../clients/http/privatelibrary.js';
 const router = express.Router();
 
 router.get("/searchSong", async (req, res) => {
-    const { title, id } = req.query;
+    const { title, id, uploader } = req.query;
 
-    microservicioPrivatelibrary.SearchSong(title, id)
+    microservicioPrivatelibrary.SearchSong(title, id, uploader)
     .then(values => {
         res.send(values);
     })
@@ -93,7 +93,7 @@ router.delete("/deleteSong", async(req,res) =>{
     })
 })
 
-router.get("/searchMusic", async (req, res) => {
+router.post("/searchMusic", async (req, res) => {
     const {address , id } = req.query;
 
     microservicioPrivatelibrary.SearchMusic(address , id)

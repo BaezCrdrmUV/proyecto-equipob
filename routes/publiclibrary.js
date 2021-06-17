@@ -100,6 +100,7 @@ router.put("/approveSong", async(req, res) =>{
 })
 
 router.post("/searchMusic", async (req, res) => {
+    console.log(req.query)
     const { address , id } = req.query;
 
     microservicioPubliclibrary.SearchMusic(address , id)

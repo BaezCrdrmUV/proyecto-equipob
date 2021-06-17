@@ -4,20 +4,21 @@ import axios from 'axios';
 const urlMS = process.env.MS_PRIVATE_LIBRARY_CONST;
 class MicroservicioPrivatelibrary
 {
-    async SearchSong(title, id)
+    async SearchSong(title, id, uploader)
     {
         let url = urlMS + "/Song/SearchSong";
         return axios.get(url, {
             params: {
                 title: title,
-                id: id
+                id: id,
+                uploader : uploader
             }
         })
         .then(response => {return response.data})
         .catch(error => {return error.response.data})
     }
 
-    async UploadMusic(newSong)
+    async UploadSong(newSong)
     {
         let url = urlMS + "/Song/UploadSong";
         return axios.post(url, newSong)
@@ -93,7 +94,7 @@ class MicroservicioPrivatelibrary
     async SearchMusic(address, id)
     {
         let url = urlMS + "/Music/SearchMusic";
-        return axios.get(url, {
+        return axios.post(url, {
             params: {
                 address: address,
                 id: id

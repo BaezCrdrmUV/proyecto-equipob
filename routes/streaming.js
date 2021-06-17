@@ -1,38 +1,43 @@
 import express from 'express';
 import got from 'got';
 import axios from 'axios';
-import FormData from 'form-data';
-import fs from 'fs';
-import fileSystem, { fstat } from 'fs';
 
 const router = express.Router();
 const urlMS = process.env.MS_STREAMING_CONST;
 
 router.get("/streaming", async (req, res) => {
-    try{ 
-        const {address} = req.query;
-        let url = urlMS + "/file/stream"+"?address="+address;
-        console.log(url);
+    const {address} = req.query;
+    let url = urlMS + "/file/stream"+"?address="+address;
+    var config = {
+        method: 'get',
+        url: url,
+        headers: { }
+      };
+      
+      axios(config)
+      .then(function (response) {
+        try{ 
+            got.stream(url).pipe(res);
+        }
+        catch (error) {
+            console.error("Error en Streaming", error);
+            return res.status(400).json({
+            success: false,
+            origin: "streaming_service",
+            data: {
+            message: "No se pudo reproducir la canción",
+            result: null} }); 
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      
 
-        got.stream(url).pipe(res);
-    }
-    catch (error) {
-        console.error("Error en Streaming", error);
-        return res.status(400).json({
-        success: false,
-        origin: "streaming_service",
-        data: {
-        message: "No se pudo reproducir la canción",
-        result: null} }); 
-    }
-    finally
-    {
-        console.log("AAAAAAAAAAAAA");
-    }
+   
 })
 
 router.post("/save", async(req, res) =>{
-    console.log(req);
     const {album} = req.query;
     var config ={
         method:'post',
