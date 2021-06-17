@@ -6,7 +6,23 @@ db.Genre.insert([
 	{ "Id": "3",
 	"Name": "Metal"},
 	{"Id": "4",
-	"Name": "Pop"}])
+	"Name": "Pop"}]),
+	{"Id": "5",
+	"Name": "Disco"}]),
+	{"Id": "6",
+	"Name": "Rap"}]),
+	{"Id": "7",
+	"Name": "Blues"}]),
+	{"Id": "8",
+	"Name": "Electronica"}]),
+	{"Id": "9",
+	"Name": "Dubstep"}]),
+	{"Id": "10",
+	"Name": "Country"}]),
+	{"Id": "11",
+	"Name": "Trap"}]),
+	{"Id": "12",
+	"Name": "Reggaeton"}])
 
 db.SongStatus.insert([
 	{ "Id": "1",
