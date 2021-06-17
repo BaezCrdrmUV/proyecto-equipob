@@ -85,9 +85,16 @@ namespace MSCuenta.Controllers
                         
                         if(userPassword != null)
                         {
-                            
+                            if(logAccount.Username == "correoAdmin@hotmail.com")
+                            {
+                                returnObject = JSONFormatter.SuccessMessageFormatter("Welcome Admin", userAccount);
+                                return Ok(returnObject);
+                            }
+                            else
+                            {
                             returnObject = JSONFormatter.SuccessMessageFormatter("Login successful", userAccount);
                             return Ok(returnObject);
+                            }
                         } 
                         else
                         {
@@ -261,11 +268,10 @@ namespace MSCuenta.Controllers
                     returnObject = JSONFormatter.ErrorMessageFormatter(errorMessage);
                     return BadRequest(returnObject);
                 }
-                
-                
             }
             catch (Exception ex)
             {
+                Console.WriteLine(account);
                 accountLog.LogError("UPDATE EXCEPTION:\n" + ex.Message);
                 returnObject = JSONFormatter.ErrorMessageFormatter(ex.Message);
                 return BadRequest(returnObject);
