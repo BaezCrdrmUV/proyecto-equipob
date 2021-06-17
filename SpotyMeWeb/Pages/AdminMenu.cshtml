@@ -6,6 +6,7 @@
     <h1 style="align-items: top; margin-left: 40%; font-size:31px;">Canciones para Aprobar</h1>
   </div>
 
+<h1 style="align-items: top; margin-left: 35%; font-size:20px;" id="noSongMessage"></h1>
 <div class="grid-container" style="margin-left: 18%; margin-top: 2%; width:1000px">
     <br/><br/>
         <ul id="thelist">
@@ -38,6 +39,7 @@
 <script>
 const cancelButton = document.getElementById("cancelButton");
 const playerSongName = document.getElementById("playerSongName");
+var noSongMessage = document.getElementById('noSongMessage');
 var counter= 0;
 var audio = document.getElementById('audio');
 var source = document.getElementById('audioSource');
@@ -268,12 +270,19 @@ function rejectSongAction(idSong)
                 debugger;
                 let data = await response.json();
                 songListGet = data;
-                var i = 0;
-                data.data.result.forEach((value) =>{
-                    debugger;
-                  addelement( data.data.result[i].Title,data.data.result[i].Composer, data.data.result[i].MultimediaId,data.data.result[i].Id);
-                    i++;
-                });
+                if(data.data.result == null)
+                {
+                    noSongMessage.innerHTML = "No existen solicitudes de canciones en este momento"
+                }
+                else
+                {
+                    var i = 0;
+                    data.data.result.forEach((value) =>{
+                        debugger;
+                    addelement( data.data.result[i].Title,data.data.result[i].Composer, data.data.result[i].MultimediaId,data.data.result[i].Id);
+                        i++;
+                    });
+                }
             }
             else
             {
