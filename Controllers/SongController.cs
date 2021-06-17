@@ -34,24 +34,31 @@ namespace MSPrivateLibrary.Controllers
         }
 
         [HttpGet("SearchSong")]
-        public async Task<ActionResult<JObject>> SearchSong([FromQuery]string title = "", [FromQuery] string id = "")
+        public async Task<ActionResult<JObject>> SearchSong([FromQuery]string title = "", [FromQuery] string id = "",[FromQuery]string uploader ="")
         {
             JObject returnObject;
             List<Song> songs = null;
             
-            if(String.IsNullOrEmpty(title) && String.IsNullOrEmpty(id))
+            if(String.IsNullOrWhiteSpace(title) && String.IsNullOrWhiteSpace(id) && String.IsNullOrWhiteSpace(uploader))
             {
                 songs = await _songService.ShowSongs();
             } 
             else
             {
-                if(String.IsNullOrEmpty(title))
+                if(String.IsNullOrWhiteSpace(title) && String.IsNullOrWhiteSpace(uploader))
                 {
                     songs = await _songService.SearchSongById(id);
                 }
                 else
                 {
-                    songs = await _songService.SearchSongByTitle(title);
+                    if(String.IsNullOrWhiteSpace(uploader) && String.IsNullOrWhiteSpace(id))
+                    {
+                        songs = await _songService.SearchSongByTitle(title);
+                    }
+                    else
+                    {
+                        songs = await _songService.SearchSongByIdUploader(uploader);
+                    }
                 }
             }
 

@@ -39,6 +39,12 @@ namespace MSPrivateLibrary.Services
             List<Song> query = await song.Find<Song>(s => s.Id.Equals(songId)).ToListAsync();
             return query;
         }
+
+        public async Task<List<Song>> SearchSongByIdUploader(string songId)
+        {
+            List<Song> query = await song.Find<Song>(s => s.UploaderId.Equals(songId)).ToListAsync();
+            return query;
+        }
             
         public async Task<List<Song>> SearchSongByTitle(string title)
         {
