@@ -39,12 +39,8 @@ class MicroservicioAccount
     }
 
     async BanAccount(accountId){
-        let url =  urlMS + "/Account/BanAccount";
-        return axios.put(url, {
-            params:{
-                accountId : accountId
-            }
-        })
+        let url =  urlMS + "/Account/BanAccount?accountId="+accountId;
+        return axios.put(url)
         .then(response => {return response.data})
         .catch(error => {return error.response.data})
     }
