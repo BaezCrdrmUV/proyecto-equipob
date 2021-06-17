@@ -59,8 +59,8 @@ namespace MSPublicLibrary.Controllers
             if (songs.Count < 1)
             {
                 string errorMessage  = "No song was found";
-                returnObject = JSONFormatter.ErrorMessageFormatter(errorMessage);
-                return BadRequest(returnObject);
+                returnObject = JSONFormatter.SuccessMessageFormatter(errorMessage,songs);
+                return Ok(returnObject);
             }
 
             returnObject = JSONFormatter.SuccessMessageFormatter("Song found", songs);
