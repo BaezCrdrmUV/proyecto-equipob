@@ -1,0 +1,56 @@
+@page
+@model ProfileModel
+
+<body style="background-color: #292929;" >
+  <div>
+    <h1 style="align-items: top; margin-left: 45%; font-size:31px;">Datos del perfil</h1>
+  </div>
+  <div class="container" style="margin-top: 6%;">
+    <label for="uname" class="label" style ="margin-left: 32.65%;"><b>Apodo :</b></label>
+    <label for="uname" class="label" id="localUser" ><b></b></label>
+  </div>
+  <div class="container" style="margin-top: 2%;">
+    <label for="email" class="label" style ="margin-left: 32.65%; margin-top: 100%;"><b>Correo:</b></label>
+    <label for="uname" class="label" id="localMail"><b></b></label>
+  </div>
+    <button type="button" style ="margin-left: 30.5%; width: 39%; margin-top: 7%;" id="editButton" onclick="editProfile()">Editar Perfil</button>
+    <button type="button" style ="margin-left: 30.5%; width: 39%; margin-top: 2%;" id="editPasswordButton" onclick="changePassword()">Cambiar contraseña</button>
+    <button type="button" class="cancelbtn" style ="margin-left: 30%; width: 40%; margin-top: 2%;" id="cancelButton" onclick="cancelAction()">Regresar</button>
+</body>
+
+<footer style="margin-top: 10%;"> 
+    <div class="container">
+            &copy; 2021 - SpotyMeWeb
+    </div>
+</footer>
+
+<link rel="stylesheet" href="~/css/SpotyMe.css" />
+
+<script>
+    const id = sessionStorage.getItem("id");
+    const username = sessionStorage.getItem("username");
+    const eMail = sessionStorage.getItem("email");
+    const cancelButton = document.getElementById("cancelButton");
+    const editButton = document.getElementById("editButton");
+    const paswwordButton = document.getElementById("editPasswordButton");
+
+    document.getElementById('localUser').innerHTML = username;
+    document.getElementById('localMail').innerHTML = eMail;
+
+
+    function cancelAction()
+    {
+        window.location.pathname = '/SpotyMeHome'
+    }
+
+    function editProfile()
+    {
+        window.location.pathname = '/EditProfile'
+    }
+
+    function changePassword(){
+      window.location.pathname = '/ChangePassword'
+    }
+
+
+</script>

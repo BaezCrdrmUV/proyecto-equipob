@@ -1,0 +1,221 @@
+@page
+@model MusicDataModel
+
+
+<body style="background-color: #292929; height: auto; overflow-x: hidden;">
+  
+<h1 style="align-items: top; margin-left: 47%; font-size:31px;">Datos de cancion</h1>
+  <div class="container" style="overflow-x: hidden;">
+        
+        <label for="uname" class="label" style ="margin-left: 32.65%; font-size: 22px;"><b>Nombre :</b></label>
+        <label  for="uname" class="label" style="font-size: 20px;" id="nombreInput"><b></b></label>
+        <button style="visibility: hidden; margin-left: 33%; width: 40%; margin-top: 1%; height: 5px;"></button>
+
+        <label for="uname" class="label" style="margin-left: 33.65%; font-size: 22px;"><b>Artista :</b></label>
+        <label for="uname" class="label" style="font-size: 20px;" id="artistaInput"><b></b></label>
+        <button style="visibility: hidden; margin-left: 33%; width: 40%; margin-top: 1%; height: 5px;"></button>   
+
+        <label for="uname" class="label" style ="margin-left: 29.7%; font-size: 22px;"><b>Compositor :</b></label>
+        <label  for="uname" class="label" id="compositorInput"><b></b></label>
+        <button style="visibility: hidden; margin-left: 33%; width: 40%; margin-top: 1%; height: 5px;"></button>   
+
+        <label for="uname" class="label" style ="margin-left: 28.5%; font-size: 22px;"><b>NombreAlbum:</b></label>
+        <label for="uname" class="label"  id="albumInput"><b></b></label>
+        <button style="visibility: hidden; margin-left: 33%; width: 40%; margin-top: 1%; height: 5px;"></button>   
+
+        <label for="uname" class="label" style ="margin-left: 31.5%; font-size: 22px;"><b>Productor:</b></label>
+        <label for="uname" class="label"  id="productorInput"><b></b></label>
+        
+
+        <button style="visibility: hidden; margin-left: 31%; width: 40%; margin-top: 1%; height: 5px;"></button>   
+        <label for="uname" class="label" style ="margin-left: 31%; font-size: 22px;"><b>Año de lanzamiento:</b></label>
+        <label tfor="uname" class="label"  id="releaseYearInput"><b></b></label>
+      
+  </div>
+    <button type="button" class="cancelbtn" style ="margin-left: 33%; width: 40%; margin-top: 1%;" id="cancelButton">Regresar</button>
+</body>
+<footer> 
+    <div class="container">
+            &copy; 2021 - SpotyMeWeb
+    </div>
+</footer>
+
+
+
+<link rel="stylesheet" href="~/css/SpotyMe.css" />
+<link rel="stylesheet" href="~/css/SpotyMe2.css" />
+
+@section Scripts {
+
+<script>
+    const nombreInput = document.getElementById("nombreInput"); 
+    const artistaInput = document.getElementById("artistaInput");
+    const compositorInput = document.getElementById("compositorInput");
+    const productorInput = document.getElementById("productorInput");
+    const releaseYearInput = document.getElementById("releaseYearInput");
+    const albumInput = document.getElementById("albumInput");
+    const idSong = sessionStorage.getItem("idSongCheck");
+    const libraryType = sessionStorage.getItem("libraryType");
+    const cancelButton = document.getElementById("cancelButton");
+
+    cancelButton.addEventListener('click', () => 
+    {
+        cancelAction();
+    });
+
+    function cancelAction()
+    {
+        if(libraryType === "Public")
+        {
+            window.location.pathname = '/SpotyMeHome'
+        }
+        else
+        {
+            if(libraryType === "Private")
+            {
+                window.location.pathname = '/PrivateLibrary'
+            }
+            else
+            {
+                window.location.pathname = '/AdminMenu'
+            }
+        }
+    }
+    
+
+        window.onload = function()
+        {
+            debugger;
+            if(libraryType === "Private")
+            {
+                let url = "http://localhost:4000/PrivateLibrary/SearchSong?id="+ idSong;
+                fetch(url,{
+                method: 'GET',
+                headers:{
+                'Accept': 'application/json'
+                }
+                }).then(async function(response){
+                console.log("Código de respuesta", response.status)
+                if(response.status == 200)
+                {
+                    debugger;
+                    let data = await response.json();
+                    nombreInput.innerHTML = data.data.result[0].Title;
+                    artistaInput.innerHTML = data.data.result[0].ArtistId;
+                    compositorInput.innerHTML = data.data.result[0].Composer;
+                    productorInput.innerHTML =  data.data.result[0].Producer;
+                    releaseYearInput.innerHTML = data.data.result[0].ReleaseYear;
+                    let url = "http://localhost:4000/PrivateLibrary/SearchAlbum?id="+data.data.result[0].AlbumId;
+                    fetch(url,{
+                    method: 'GET',
+                    headers:{
+                    'Accept': 'application/json'
+                    }
+                    }).then(async function(response){
+                        if(response.status == 200)
+                        {
+                            let data2 = await response.json();
+                            albumInput.innerHTML = data2.result[0].Name;
+                        }
+                        else
+                        {
+                            if(response.status == 500)
+                            {
+                            console.error("Error del servidor");
+                            }
+                            else
+                            {
+                                console.error("Error de peticion");
+                            }
+                        }            
+                    })
+                    .catch(function(error){
+                        console.error(error);
+                    });
+                }
+                else
+                {
+                    if(response.status == 500)
+                    {
+                    console.error("Error del servidor");
+                    }
+                    else
+                    {
+                        console.error("Error de peticion");
+                    }
+                }            
+                })
+                .catch(function(error){
+                    console.error(error);
+                });
+            }
+            else
+            {
+                let url = "http://localhost:4000/Publiclibrary/SearchSong?id="+ idSong;
+                fetch(url,{
+                method: 'GET',
+                headers:{
+                'Accept': 'application/json'
+                }
+                }).then(async function(response){
+                console.log("Código de respuesta", response.status)
+                if(response.status == 200)
+                {
+                    let data = await response.json();
+                    nombreInput.innerHTML = data.result[0].Title;
+                    artistaInput.innerHTML = data.result[0].ArtistId;
+                    compositorInput.innerHTML = data.result[0].Composer;
+                    productorInput.innerHTML =  data.result[0].Producer;
+                    releaseYearInput.innerHTML = data.result[0].ReleaseYear;
+                    debugger;
+                    let url = "http://localhost:4000/Publiclibrary/SearchAlbum?id="+data.result[0].AlbumId
+                    debugger;
+                    fetch(url,{
+                    method: 'GET',
+                    headers:{
+                    'Accept': 'application/json'
+                    }
+                    }).then(async function(response){
+                        if(response.status == 200)
+                        {
+                            let data2 = await response.json();
+                            debugger;
+                            albumInput.innerHTML = data2.result[0].Name;
+                        }
+                        else
+                        {
+                            if(response.status == 500)
+                            {
+                            console.error("Error del servidor");
+                            }
+                            else
+                            {
+                                console.error("Error de peticion");
+                            }
+                        }            
+                    })
+                    .catch(function(error){
+                        console.error(error);
+                    });
+                }
+                else
+                {
+                    if(response.status == 500)
+                    {
+                    console.error("Error del servidor");
+                    }
+                    else
+                    {
+                        console.error("Error de peticion");
+                    }
+                }            
+                })
+                .catch(function(error){
+                    console.error(error);
+                });
+            }
+        }
+
+</script>
+
+}

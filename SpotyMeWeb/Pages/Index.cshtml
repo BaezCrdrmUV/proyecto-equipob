@@ -1,0 +1,187 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<body style="background-color: #292929;" >
+  <div class="logocontainer">
+    <img src="~/img/logo.jpg" alt="logoImage" class="LogoImage">
+  </div>
+  <div>
+    <h1 style ="margin-left: 46%; font-size:31px;">SpotyMe</h1>
+  </div>
+  <form method="POST" id="formLogin">
+  <div class="container">
+    <label for="correo" class="label" style ="margin-left: 30%;"><b>Correo  :</b></label>
+    <input  type="text" placeholder="Ingrese correo" minlenght="5" maxlength="100" name="correo" 
+    pattern= "[a-z0-9._%+-]+&#64;[a-z0-9.-]+\.[a-z]{2,}$" required id="usernameInput">
+
+    <label for="psw" class="label" style ="margin-left: 28%;"><b>Contraseña:</b></label>
+    <input type="password" style="color: white;" minlength="5" maxlength="15" placeholder="Ingrese su contraseña" name="password" required style="color: white;" id="passwordInput">
+    
+  </div>
+  </form>
+  <button type="button" style ="margin-left: 30%; width: 40%;" id="logInButton" onclick="logInAction()">Iniciar Sesion</button>
+
+  <div class="container" >
+    <button type="button" class="button" style ="margin-left: 30%; width: 40%;" id="registerButton" onclick="registerAccount()">Registrar Cuenta</button>
+  </div>
+
+    <label for="errorMessage" class="label" style ="margin-left: 40%; color: red;" id="errorMessage"></label>
+</body>
+
+<footer style="margin-top: 9.5%;"> 
+    <div class="container">
+            &copy; 2021 - SpotyMeWeb
+    </div>
+</footer>
+
+<link rel="stylesheet" href="~/css/SpotyMe.css" />
+
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+<script>
+    const usernameInput = document.getElementById("usernameInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const logErrorMessage= document.getElementById("errorMessage");
+    const form = $('#formLogin')[0];
+
+    function entrar()
+    {
+        window.location.pathname = '/SpotyMeHome';
+    }
+
+    function logIn()
+    {
+        if(correctInput() && form.checkValidity())
+        {
+            logInAction();
+        }
+        else
+        {
+            wrongInput();
+        }
+        
+    }
+        
+
+
+    function logInAction()
+    {
+        let logAccount ={
+                "Username": usernameInput.value,
+                "PasswordString": hashText(passwordInput.value)
+        }
+        let url = "http://localhost:4000/Account/Login";
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(logAccount),
+            headers: {
+                "Content-Type": "application/json"            }
+        }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+                
+                let data = await response.json();
+                console.log(data);
+                if(data.success == true)
+                {
+                    if(data.data.message == "Login successful")
+                    {
+                    debugger;
+                    var id = data.data.result.AccountId;
+                    var user = data.data.result.Username;
+                    var mail = data.data.result.Email;
+                    var passwdId = data.data.result.Passwords[0].PasswordId;
+                    sessionStorage.setItem("id",id);
+                    sessionStorage.setItem("username",user);
+                    sessionStorage.setItem("email",mail);
+                    sessionStorage.setItem("passwordId",passwdId);
+                    alert("Inicio de sesion Exitoso");
+                    window.location.pathname = '/SpotyMeHome';
+                    }
+                    else
+                    {
+                        if(data.data.message == "Welcome Admin")
+                        {
+                            alert("Inicio de sesion Exitoso");
+                            window.location.pathname = '/AdminMenu';
+                        }
+                        else
+                        {
+                            alert("Error de inicio de sesion");
+                        }
+                    }
+                }
+                else
+                {
+                    logErrorMessage.innerHTML = "Ha ingresado mail o contraseña incorrecta"
+                }
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    consoel.log("Error de peticion");
+                }
+            }        
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+    }
+
+    function correctInput()
+    {
+        if(usernameInput.value.trim() != "" && passwordInput.value.trim() != "")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }    
+    }
+
+    function wrongInput()
+    {
+        if(usernameInput.value.trim() == "" )
+        {
+            usernameInput.classList.add("inputError");
+        }
+        
+        if(passwordInput.value.trim() == "" )
+        {
+            passwordInput.classList.add("inputError");
+        }
+    }
+
+    function hashText(text) 
+    {
+        if (typeof text != 'string') {
+            throw TypeError('El argumento debe ser una cadena de caracteres.');
+        }
+
+        if (!text.length) {
+            return null;
+        }
+
+        let caracteres = text.split('');
+
+        return caracteres.reduce((h, c) => (h = c.charCodeAt(0) + (h << 6) + (h << 16) - h), 0);
+    }
+    
+    function registerAccount()
+    {
+        window.location.pathname = '/RegisterAccount'
+    }
+
+     
+</script>
+}

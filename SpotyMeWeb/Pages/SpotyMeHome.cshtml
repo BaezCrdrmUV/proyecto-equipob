@@ -1,0 +1,267 @@
+@page
+@model SpotyMeHomeModel
+<body style="background-color: #292929;">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+<div class="topnav">
+  <s aria-disabled="true" style="color:#ac1cc9;">SpotyMe</s>
+  <a class="active" href="#home" s>Home</a>
+</div>
+<div id="mySidenav" class="sidenav">
+  <a href="#" id="goProfile" >Perfil</a>
+  <a href="#" id="checkPrivate">Biblioteca privada</a>
+  <a href="#" id="uploadSong">Subir cancion publica</a>
+  <a href="#" id="uploadSongPrivate">Subir cancion privada</a>
+    <div class="container" style="margin-top: 100%;">
+            &copy; 2021 - SpotyMeWeb
+    </div>
+</div>
+
+
+<div class="grid-container" style="margin-left: 2%; margin-top: 2%;" id="app">
+
+</div>
+
+<template id="item_template">
+  <div class="item">
+        <img id="{{ id }}" alt="logoImage" class="LogoImage" width="200" height="200">
+        <h2 >{{ titl }}</h2>
+        <h1 >{{ arts }}</h1>
+        <button id="{{ id }}" type='button'onclick='checkData(this)' 
+        style='background-color: #ac1cc9;
+              color: white;
+              padding: 14px 20px;
+              width : auto;
+              border: none;
+              cursor: pointer;
+              -moz-border-radius:28px;
+              border-radius:28px;'
+              class='fa fa-info' ></button>
+        <button id="{{ songid }}" type='button'onclick='playSong(this)' 
+        style='background-color: #ac1cc9;
+              color: white;
+              padding: 14px 20px;
+              width : auto;
+              border: none;
+              cursor: pointer;
+              -moz-border-radius:28px;
+              border-radius:28px;'
+              class='fa fa-play'></button>
+    </div>
+</template>
+<button style="visibility: hidden; margin-left: 30%; width: 40%; margin-top: 1%; height: 5px;"></button>
+<h1 style="align-items: top; margin-left: 35%; font-size:20px;" id="noSongMessage"></h1>
+<button style="visibility: hidden; margin-left: 30%; width: 40%; margin-top: 1%; height: 5px;"></button>
+
+<label for="uname" id="playerSongName" class="label" style ="margin-left: 29.7%; font-size: 22px;"><b></b></label>
+
+<button style="visibility: hidden; margin-left: 30; width: 40%; margin-top: 1%; height: 5px;"></button>
+<audio controls style="width: 800px; margin-left: 18%; margin-top: 2%;" id="audio" >
+  <source id="audioSource" type="audio/mpeg">
+</audio>
+<button style="visibility: hidden; margin-left: 33%; width: 40%; margin-top: 1%; height: 5px;"></button>
+
+</body>
+
+<link rel="stylesheet" href="~/css/Header.css" />
+<link rel="stylesheet" href="~/css/MusicPlayer.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+@section Scripts{
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script  src="js/player.js"></script>
+
+<script>
+    const id = sessionStorage.getItem("id");
+    const username = sessionStorage.getItem("username");
+    const eMail = sessionStorage.getItem("email");
+    const profileBtn = document.getElementById("goProfile");
+    const privateBtn = document.getElementById("checkPrivate");
+    const upsongBtn = document.getElementById("uploadSong");
+    const upPrivateSongBtn = document.getElementById("uploadSongPrivate");
+    const playerSongName = document.getElementById("playerSongName");
+    const tmpl = $('#item_template').html();
+    var audio = document.getElementById('audio');
+    var noSongMessage = document.getElementById('noSongMessage');
+    var source = document.getElementById('audioSource');
+    const container = $('#app');
+    var publicListSong;
+
+    profileBtn.addEventListener('click', () => 
+    {
+        checkProfile();
+    });
+
+    privateBtn.addEventListener('click', () => 
+    {
+        privateLibraryPage();
+    });
+
+    upsongBtn.addEventListener('click', () => 
+    {
+        uploadSong();
+    });
+
+    upPrivateSongBtn.addEventListener('click', () =>
+    {
+      uploadSongPrivate();
+    });
+
+    function checkProfile()
+    {
+        window.location.pathname = '/Profile'
+    };
+
+    function uploadSong()
+    {
+        window.location.pathname = '/UploadPublicSong'
+    };
+
+    function uploadSongPrivate()
+    {
+        window.location.pathname = '/UploadPrivateSong'
+    };
+
+    function privateLibraryPage()
+    {
+        window.location.pathname = '/PrivateLibrary'
+    };
+
+    function playSong(idButton)
+    {
+          var id = idButton.id;
+          let url = "http://localhost:4000/Publiclibrary/SearchMusic?id="+id;
+            fetch(url,{
+            method: 'POST',
+            headers:{
+            'Accept': 'application/json'
+            }
+            }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+                let data = await response.json();
+                var i = 0;
+                debugger;
+                data.result.forEach((value) =>{
+                  if(data.result[i].Id == id)
+                  {
+                    source.src = ("http://localhost:4000/streaming/streaming?address="+data.result[i].Address);
+                    audio.load();
+                    audio.play();
+                    playerSongName.innerHTML ="Reproduciendo: "+ data.result[i].Name;
+                  }
+                  i++;
+                });
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    console.error("Error de peticion");
+                }
+            }            
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+    }
+
+    function addItem(container, template, id, titl, arts, songid) {
+      container.append(Mustache.render(template, { id, titl, arts,songid }));
+    }
+
+    
+
+    window.onload = function(){
+            let url = "http://localhost:4000/Publiclibrary/SearchSong";
+            fetch(url,{
+            method: 'GET',
+            headers:{
+            'Accept': 'application/json'
+            }
+            }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+              let data = await response.json();
+              var i = 0;
+              debugger;
+              if(data.message == "No song was found")
+              {
+                    noSongMessage.innerHTML = "Aun no se han ingresado canciones a la biblioteca publica"
+              }
+              else
+              {
+                data.result.forEach((value) =>{
+                  addItem(container, tmpl,data.result[i].Id,data.result[i].Title,data.result[i].Composer,data.result[i].MultimediaId); 
+                  obtenerAlbum(data.result[i].AlbumId,i,data.result[i].Id);
+                  i++;
+                });
+              }
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    console.error("Error de peticion");
+                }
+            }            
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+        
+    }
+
+    function obtenerAlbum(idAlbum, i,idSong){
+            let url = "http://localhost:4000/Publiclibrary/SearchAlbum?id=";
+            url = url + idAlbum;
+            fetch(url,{
+            method: 'GET',
+            headers:{
+            'Accept': 'application/json'
+            }
+            }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+              let data = await response.json();
+              document.getElementById(idSong).src="http://localhost:8083/file/view?type=.jpg&path="+data.result[0].ImageAddress+data.result[0].ImageName;
+            debugger;
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    console.error("Error de peticion");
+                }
+            }            
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+    }
+
+    function checkData(idSong)
+    {
+        sessionStorage.setItem("idSongCheck",idSong.id);
+        sessionStorage.setItem("libraryType","Public");
+        window.location.pathname = '/MusicData'
+    }
+</script>
+
+}

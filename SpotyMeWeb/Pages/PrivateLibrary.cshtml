@@ -1,0 +1,164 @@
+@page
+@model PrivateLibraryModel
+
+<body style="background-color: #292929;" >
+  <div>
+    <h1 style="align-items: top; margin-left: 40%; font-size:31px;">Biblioteca privada</h1>
+  </div>
+
+<h1 style="align-items: top; margin-left: 35%; font-size:20px;" id="noSongMessage"></h1>
+<div class="grid-container" style="margin-left: 18%; margin-top: 2%; width:1000px">
+    <br/><br/>
+        <ul id="thelist">
+    </ul>
+</div>
+</body>
+
+<button style="visibility: hidden; margin-left: 33%; width: 40%; margin-top: 1%; height: 5px;"></button>
+
+<label for="uname" id="playerSongName" class="label" style ="margin-left: 29.7%; font-size: 22px;"><b></b></label>
+
+<button style="visibility: hidden; margin-left: 33%; width: 40%; margin-top: 1%; height: 5px;"></button>
+<audio controls style="width: 800px; margin-left: 20%; margin-top: 2%;" id="audio" >
+ <source id="audioSource" type="audio/mpeg">
+</audio>
+
+<button type="button" class="cancelbtn" style ="margin-left: 30%; width: 40%; margin-top: 1%;" id="cancelButton">Regresar</button>
+<footer style="margin-top: 2%;"> 
+    <div class="container">
+            &copy; 2021 - SpotyMeWeb
+    </div>
+</footer>
+
+<link rel="stylesheet" href="~/css/Header.css" />
+<link rel="stylesheet" href="~/css/SpotyMe.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+@section Scripts {
+<script>
+const cancelButton = document.getElementById("cancelButton");
+const playerSongName = document.getElementById("playerSongName");
+var counter= 0;
+var audio = document.getElementById('audio');
+var source = document.getElementById('audioSource');
+var noSongMessage = document.getElementById('noSongMessage');
+var songListGet;
+
+    cancelButton.addEventListener('click', () => 
+    {
+        cancelAction();
+    });
+
+    function cancelAction()
+    {
+        window.location.pathname = '/SpotyMeHome'
+    }
+
+function addelement(songName,artist,id, songid) 
+{
+    var completelist= document.getElementById("thelist");
+
+    completelist.innerHTML += "<li style='margin-left: -10%; font-size: 25px; margin-top:5%;'>" + songName +"///"+ artist+"." + "<button id='"+ id +
+    "'type='button'onclick='playSong(this)'style='margin-left: 10%;' class='fa fa-play'></button><button id='"+ songid + "' type='button'onclick='checkData(this)' style='margin-left: 3%;'class='fa fa-info'></button></li>";
+    
+    counter++;
+}
+
+    function checkData(idSong)
+    {
+        sessionStorage.setItem("idSongCheck",idSong.id);
+        sessionStorage.setItem("libraryType","Private");
+        window.location.pathname = '/MusicData'
+    }
+
+function playSong(idButton)
+{
+    var id = idButton.id;
+    let url = "http://localhost:4000/Privatelibrary/SearchMusic?id="+id;
+            fetch(url,{
+            method: 'POST',
+            headers:{
+            'Accept': 'application/json'
+            }
+            }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+                let data = await response.json();
+                var i = 0;
+                debugger;
+                data.result.forEach((value) =>{
+                  if(data.result[i].Id == id)
+                  {
+                    source.src = ("http://localhost:4000/streaming/streaming?address="+data.result[i].Address);
+                    audio.load();
+                    audio.play();
+                    playerSongName.innerHTML ="Reproduciendo: "+ data.result[i].Name;
+                  }
+                  i++;
+                });
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    console.error("Error de peticion");
+                }
+            }            
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+}
+
+
+    window.onload = function(){
+            let url = "http://localhost:4000/Privatelibrary/SearchSong?uploader="+sessionStorage.getItem("id");
+            fetch(url,{
+            method: 'GET',
+            headers:{
+            'Accept': 'application/json'
+            }
+            }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+                debugger;
+                let data = await response.json();
+                songListGet = data;
+                var i = 0;
+                if(data.data.result == null)
+                {
+                    noSongMessage.innerHTML = "Aun no ha ingresado canciones a su biblioteca privada"
+                }
+                else
+                {
+                    data.data.result.forEach((value) =>{
+                  addelement( data.data.result[i].Title,data.data.result[i].Composer, data.data.result[i].MultimediaId,data.data.result[i].Id);
+                    i++;
+                });
+                }
+                
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    console.error("Error de peticion");
+                }
+            }            
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+    }
+</script>
+}

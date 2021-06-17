@@ -1,0 +1,143 @@
+@page
+@model EditProfileModel
+
+<body style="background-color: #292929;" >
+  <div>
+    <h1 style="align-items: top; margin-left: 45%; font-size:31px;">Editar Usuario</h1>
+  </div>
+  
+<form method="POST" id="updateAccount">
+  <div class="container" style="margin-top: 2%;">
+        <label for="uname" class="label" style ="margin-left: 32.65%;"><b>*Apodo :</b></label>
+        <input  type="text" placeholder="Editar perfil" name="username" minlenght="5" maxlength="30" id="usernameInput" required>
+
+        <label for="email" class="label" style ="margin-left: 32.8%;"><b>*Correo:</b></label>
+        <input type="email" placeholder="Ingrese su correo" minlenght="5" maxlength="100" name="correo" 
+        pattern= "[a-z0-9._%+-]+&#64;[a-z0-9.-]+\.[a-z]{2,}$" required id="mailInput">
+
+  </div>
+</form>
+<button type="submit" style ="margin-left: 30.5%; width: 39%; margin-top: 3%;" id="updateButton" onclick="updateAcc()">Actualizar</button>
+<div>
+    <label for="errorMessage" class="label" style ="margin-left: 36.5%; color: red;" id="errorMessage"></label>
+</div>
+    <button type="button" class="cancelbtn" style ="margin-left: 30%; width: 40%; margin-top: 1%;" id="cancelButton" onclick="cancelAction()">Cancelar</button>
+</body>
+
+<footer style="margin-top: 9.3%;"> 
+    <div class="container">
+            &copy; 2021 - SpotyMeWeb
+    </div>
+</footer>
+
+<link rel="stylesheet" href="~/css/SpotyMe.css" />
+
+@section Scripts {
+<script>
+    const cancelButton = document.getElementById("cancelButton");
+    const updateInputButton= document.getElementById("updateButton");  
+    const usernameInput = document.getElementById("usernameInput");
+    const mailInput = document.getElementById("mailInput");
+    const logErrorMessage= document.getElementById("errorMessage");
+    const username = sessionStorage.getItem("username");
+    const eMail = sessionStorage.getItem("email");
+    const id = sessionStorage.getItem("id");
+
+    window.onload = function ()
+    {
+      document.getElementById('usernameInput').value = username;
+      document.getElementById('mailInput').value = eMail;
+    }
+
+    function updateAcc(){
+
+        let accountInfo = {
+                "AccountId" : id,
+                "username" : usernameInput.value,
+                "email" : mailInput.value,
+                "IsUser" : 1,
+                "Status" : {
+                    "StatusId": 1,
+                    "Name": "Activo"
+                },
+                "Passwords" : [
+                    {
+                        "PasswordId": null,
+                        "PasswordString":null,
+                        "OwnerId": null
+                    }
+                ]
+            }
+            debugger;
+        if(correctInput())
+        {
+            let url = "http://localhost:4000/Account/updateAccount";
+            fetch(url,{
+            method: 'POST',
+            body: JSON.stringify(accountInfo),
+            headers:{
+            'Content-Type': 'application/json'
+            }
+            }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+                
+                let data = await response.json();
+                console.log(data);
+                if(data.success == true)
+                {
+                  alert("Se ha actualizado perfectamente el perfil");
+                  window.location.pathname = '/Profile'
+                }
+                else
+                {
+                    logErrorMessage.innerHTML = data.data.message;
+                }
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    console.error("Error de peticion");
+                }
+            }             
+            debugger;
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+        }
+        else
+        {
+            logErrorMessage.innerHTML = "Algunos campos estan incorrectos y/o vacios, verificar"
+            wrongInput();
+        }
+    }
+
+    function correctInput()
+    {
+        if(usernameInput.value.trim() != "" && mailInput.value.trim() != "" &&
+        usernameInput.value.length > 3 && mailInput.value.length > 5 )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }    
+    }
+
+    
+    function cancelAction()
+    {
+        window.location.pathname = '/Profile'
+    }
+
+    
+</script>
+}

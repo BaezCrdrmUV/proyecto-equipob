@@ -1,0 +1,482 @@
+@page
+@model UploadPrivateSongModel
+
+
+<body style="background-color: #292929; height: auto; overflow-x: hidden;"  >
+  
+<h1 style="align-items: top; margin-left: 47%; font-size:31px;">Subir cancion</h1>
+<form method="POST" id="registerAccount">
+  <div class="container" style="overflow-x: hidden;">
+        
+        <label for="uname" class="label" style ="margin-left: 32.65%;"><b>*Nombre :</b></label>
+        <input  type="text" placeholder="Ingrese usuario" name="nombre" minlenght="2" maxlength="50" id="nombreInput" required>
+
+        <label for="uname" class="label" style ="margin-left: 33.2%;"><b>*Artista :</b></label>
+        <input  type="text" placeholder="Ingrese usuario" name="artista" minlenght="2" maxlength="50" id="artistaInput" required>
+
+        <label for="uname" class="label" style ="margin-left: 30.7%;"><b>*Compositor :</b></label>
+        <input  type="text" placeholder="Ingrese usuario" name="compositor" minlenght="2" maxlength="50" id="compositorInput" required>
+
+        <label for="uname" class="label" style ="margin-left: 29.5%;"><b>*NombreAlbum:</b></label>
+        <input type="text" placeholder="Ingrese su correo" minlenght="2" maxlength="50" name="productor" required id="albumInput">
+
+        <label for="uname" class="label" style ="margin-left: 32%;"><b>*Productor:</b></label>
+        <input type="text" placeholder="Ingrese su correo" minlenght="2" maxlength="50" name="productor" required id="productorInput">
+        
+        <label for="uname" class="label" style ="margin-left: 31%;"><b>*ReleaseYear:</b></label>
+        <input type="text" placeholder="Año" minlenght="4" maxlength="4" name="releaseYear" required id="releaseYearInput" style="width: 130px;">
+        
+
+        <label for="uname" class="label" ><b>*Genero:</b></label>
+
+        <select class="select" name="format" id="genreBox" style="width: 100px; margin-left: 56%; margin-top: -4%"></select>
+        
+        <label class="label"  style ="margin-left: 43%;"></label>
+        <div>
+            <label class="label" id="archivoMensaje" style ="margin-left: 45%;">Aun no ha seleccionado un archivo</label>
+        </div>
+        <button type="button" style ="width: 30%; margin-left: 39%; margin-top: 2%; margin-bottom: 2%" id="uploadSong" onclick="importData()">Seleccionar Archivo Musica</button>
+        
+
+        <label class="label"  style ="margin-left: 43%;"></label>
+        <div>
+            <label class="label" id="imagenMensaje" style ="margin-left: 45%; margin-top: 2%">Aun no ha seleccionado una Imagen</label>
+        </div>
+        
+        <button type="button" style ="width: 30%; margin-left: 39%; margin-top: 2%" id="uploadImage" onclick="importImageData()">Seleccionar Imagen Album</button>  
+
+        <button type="button" style ="width: 30%; margin-left: 39%; margin-top: 2%" id="registerButton" onclick="registerAll()">Subir Cancion</button> 
+  </div>
+</form>
+<div>
+    <label for="errorMessage" class="label" style ="margin-left: 36.5%; color: red;" id="errorMessage"></label>
+</div>
+    <button type="button" class="cancelbtn" style ="margin-left: 33%; width: 40%; margin-top: 1%;" id="cancelButton" onclick="cancelAction()">Cancelar</button>
+</body>
+<footer > 
+    <div class="container">
+            &copy; 2021 - SpotyMeWeb
+    </div>
+</footer>
+
+
+
+<link rel="stylesheet" href="~/css/SpotyMe.css" />
+<link rel="stylesheet" href="~/css/SpotyMe2.css" />
+
+@section Scripts {
+
+<script>
+    const cancelButton = document.getElementById("cancelButton");
+    const registerInputButton= document.getElementById("registerButton");  
+    const nombreInput = document.getElementById("nombreInput"); 
+    const artistaInput = document.getElementById("artistaInput");
+    const compositorInput = document.getElementById("compositorInput");
+    const productorInput = document.getElementById("productorInput");
+    const releaseYearInput = document.getElementById("releaseYearInput");
+    const albumInput = document.getElementById("albumInput");
+    const logErrorMessage= document.getElementById("errorMessage");
+    const archivoMensaje = document.getElementById("archivoMensaje");
+    const imagenMensaje = document.getElementById("imagenMensaje");
+    var albumArraySearch;
+    var idAlbum = "No"
+    var nameImageFile;
+    var nameFile;
+    var albumInputNoSpace;
+    var formSongData = new FormData();
+    var formImageData = new FormData();
+    var file;
+    var albumRoute;
+    var songName;
+    var sizeName;
+    var dateSong;
+    var albumSongFile;
+    var albumImageName;
+    var dateImage;
+    var albumImageFile;
+    var multimediaIdFile;
+    var select = document.getElementById("genreBox");
+    
+    
+    cancelButton.addEventListener('click', () => 
+    {
+        cancelAction();
+    }); 
+    
+
+    nombreInput.addEventListener("focus", () => 
+    {
+        nombreInput.classList.remove("formulario__input-error");
+    });
+
+    artistaInput.addEventListener("focus", () => 
+    {
+        artistaInput.classList.remove("formulario__input-error");
+    });
+
+    productorInput.addEventListener("focus", () => 
+    {
+        productorInput.classList.remove("formulario__input-error");
+    });
+
+    releaseYearInput.addEventListener("focus", () => 
+    {
+        releaseYearInput.classList.remove("formulario__input-error");
+    });
+
+    compositorInput.addEventListener("focus", () => 
+    {
+        compositorInput.classList.remove("formulario__input-error");
+    });
+
+    function correctInput()
+    {
+        if(nombreInput.value.trim() != "" && productorInput.value.trim() != ""
+        && releaseYearInput.value.trim() != "" && compositorInput.value.trim()!= ""
+        && artistaInput.value.trim() != "" && archivoMensaje.value == "Aun no ha seleccionado un archivo")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }    
+    }
+    
+    function cancelAction()
+    {
+        window.location.pathname = '/SpotyMeHome'
+    }
+
+
+    window.onload =function(){
+        let url = "http://localhost:4000/Privatelibrary/SearchGenre";
+            fetch(url,{
+            method: 'GET',
+            headers:{
+            'Accept': 'application/json'
+            }
+            }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+              let data = await response.json();
+              var i = 0
+              data.result.forEach((value) =>{
+                  var el = document.createElement("option");
+                  el.textContent = data.result[i].Name;
+                  el.value = data.result[i].Id;
+                  select.appendChild(el);
+                  i++
+              });
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    console.error("Error de peticion");
+                }
+            }            
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+
+        let url2 = "http://localhost:4000/Privatelibrary/SearchAlbum?id=";
+                    fetch(url2,{
+                    method: 'GET',
+                    headers:{
+                    'Accept': 'application/json'
+                    }
+                    }).then(async function(response){
+                    console.log("Código de respuesta", response.status)
+                    if(response.status == 200)
+                    {
+                    albumArraySearch = await response.json();
+                    }
+                    })
+                        .catch(function(error){
+                            console.error(error);
+                        });
+    }
+
+
+    function registerAll(){
+        if(nombreInput.value.trim() != "" && productorInput.value.trim() != ""
+        && releaseYearInput.value.trim() != "" && compositorInput.value.trim()!= ""
+        && artistaInput.value.trim() != "" && archivoMensaje.value != "Aun no ha seleccionado un archivo"
+        && imagenMensaje != "Aun no ha seleccionado una Imagen" )
+        {
+             var i = 0;
+             debugger;
+                 albumArraySearch.result.forEach((value) =>{
+                     debugger;
+                if(albumArraySearch.result[i].Name === albumInput.value){
+                    idAlbum = albumArraySearch.result[i].Id;
+                }
+                i++
+             });
+             debugger;
+            if(idAlbum === "No")
+            {
+                var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+                var raw = JSON.stringify({
+                    "Id": "",
+                    "Name": albumInput.value,
+                    "ImageAddress": albumInputNoSpace + "/",
+                    "ImageName": albumImageName,
+                    "ImageType": ".jpg"
+                });
+
+                var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+                };
+
+                fetch("http://localhost:4000/Privatelibrary/UploadAlbum", requestOptions)
+                .then(async function(response){
+                    if(response.status == 200)
+                    {
+                        debugger;
+                        var dataAlbumCheck = await response.json();
+                        idAlbum = dataAlbumCheck.data.result.Id;
+                        debugger;
+                        }
+                        else
+                        {
+                            if(response.status == 500)
+                            {
+                                console.error("Error del servidor");
+                            }
+                            else
+                            {
+                                console.error("Error de peticion");
+                            }
+                    } 
+                })
+                .catch(error => console.log('error', error));
+            }
+            debugger;
+            let songData ={
+                "Id": "",
+                "Name": songName,
+                "FileType": ".mp3",
+                "Address": albumInputNoSpace + "/" + nameFile,
+                "Size": sizeName,
+                "CreationDate": dateSong
+            }
+            let url = "http://localhost:4000/Privatelibrary/UploadMusic";
+            fetch(url,{
+            method: 'POST',
+            body: JSON.stringify(songData),
+            headers:{
+            'Content-Type': 'application/json'
+            }
+            }).then(async function(response){
+            console.log("Código de respuesta", response.status)
+            if(response.status == 200)
+            {
+                debugger;
+                var data1 = await response.json();
+                multimediaIdFile = data1.data.result.Id;
+                debugger;
+                   
+                
+                    let songRequest = {
+                        "Id": "",
+                        "Title": nombreInput.value,
+                        "UploaderId": sessionStorage.getItem("id"),
+                        "ArtistId": artistaInput.value,
+                        "MultimediaId": multimediaIdFile,
+                        "Composer": compositorInput.value,
+                        "Producer": productorInput.value,
+                        "Duration": "420",
+                        "ReleaseYear": releaseYearInput.value,
+                        "AlbumId": idAlbum,
+                        "GenreId": select.value,
+                        "StatusId": ""
+                    }
+                    
+                debugger;
+                    let url2 = "http://localhost:4000/Privatelibrary/UploadSong";
+                    fetch(url2,{
+                    method: 'POST',
+                    body: JSON.stringify(songRequest),
+                    headers:{
+                    'Content-Type': 'application/json'
+                    }
+                    }).then(async function(response){
+                    console.log("Código de respuesta", response.status)
+                    if(response.status == 200)
+                    {
+                        
+                        let url = "http://localhost:4000/streaming/save?album="+ albumInputNoSpace;
+		                fetch(url,{
+                            method: 'POST',
+                            body: formImageData,
+                            redirect: 'follow'
+                            }).then(async function(response){
+                            console.log("Código de respuesta", response.status)
+                            if(response.status == 200)
+                            {
+                                let url = "http://localhost:4000/streaming/save?album="+ albumInputNoSpace;
+                                    fetch(url,{
+                                    method: 'POST',
+                                    body: formSongData,
+                                    redirect: 'follow'
+                                    }).then(async function(response){
+                                    console.log("Código de respuesta", response.status)
+                                    if(response.status == 200)
+                                    {
+                                        alert("Se ha subido tu peticion, espere a que el administrador lo apruebe");
+                                        window.location.pathname = '/SpotyMeHome';
+                                    }
+                                    else
+                                    {
+                                        if(response.status == 500)
+                                        {
+                                        console.error("Error del servidor");
+                                        }
+                                        else
+                                        {
+                                            console.error("Error de peticion");
+                                        }
+                                    }            
+                                })
+                                .catch(function(error){
+                                    console.error(error);
+                                });
+                                    }
+                                    else
+                                    {
+                                        if(response.status == 500)
+                                        {
+                                        console.error("Error del servidor");
+                                        }
+                                        else
+                                        {
+                                            console.error("Error de peticion");
+                                        }
+                                    }            
+                        })
+                        .catch(function(error){
+                            console.error(error);
+                        });
+                    }
+                    else
+                    {
+                        if(response.status == 500)
+                        {
+                        console.error("Error del servidor");
+                        }
+                        else
+                        {
+                            console.error("Error de peticion");
+                        }
+                    }             
+                    })
+                    .catch(function(error){
+                        console.error(error);
+                    });
+            }
+            else
+            {
+                if(response.status == 500)
+                {
+                console.error("Error del servidor");
+                }
+                else
+                {
+                    console.error("Error de peticion");
+                }
+            }           
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+        }
+        else
+        {
+            logErrorMessage.innerHTML = "Algunos campos estan incorrectos y/o vacios, verificar"
+        }
+    }
+
+    function importData() {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = _ => {
+            var sFileName = input.value;
+            let files =   Array.from(input.files);
+            if (sFileName.length > 0) {
+                var blnValid = false;
+                var sCurExtension = ".mp3"
+                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                        blnValid = true;
+                    }
+                
+                if (!blnValid) {
+                    alert("Sorry, " + sFileName + " is invalid, allowed extensions are mp3 files");
+                    return false;
+                }else{
+                    nameFile = sFileName;
+                    nameFile= nameFile.replace(/.*[\/\\]/, '');
+                    archivoMensaje.innerHTML = nameFile;
+                    songName = (nameFile.split('.').slice(0, -1).join('.')).replace(/ +/g, "");
+                    sizeName = files[0].size;
+                    dateSong = files[0].lastModifiedDate;
+                    albumSongFile = files[0];
+                    formSongData.append("archivo",input.files[0],input.value);
+                    albumInputNoSpace = albumInput.value.replace(/\s/g,'');
+                    return true;
+                }
+            }
+        };
+        input.click();
+    }
+
+    function importImageData()
+    {
+        let inputImage = document.createElement('input');
+        inputImage.type = 'file';
+        inputImage.onchange = _ => {
+            var sFileName = inputImage.value;
+            let files =   Array.from(inputImage.files);
+            if (sFileName.length > 0) {
+                var blnValid = false;
+                var sCurExtension = ".jpg"
+                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                        blnValid = true;
+                    }
+                
+                if (!blnValid) {
+                    alert("Sorry, " + sFileName + " is invalid, allowed extensions are jpg files");
+                    return false;
+                }else{
+                    nameImageFile = sFileName;
+                    nameImageFile= nameImageFile.replace(/.*[\/\\]/, '');
+                    imagenMensaje.innerHTML = nameImageFile;
+                    albumImageName = (nameImageFile.split('.').slice(0, -1).join('.')).replace(/ +/g, "");
+                    dateImage = files[0].lastModifiedDate;
+                    formImageData.append("archivo",inputImage.files[0],inputImage.value);
+                    albumInputNoSpace = albumInput.value.replace(/\s/g,'');
+                            
+                    return true;
+                }
+            }
+        };
+        inputImage.click();
+    }
+
+    
+
+</script>
+
+}
