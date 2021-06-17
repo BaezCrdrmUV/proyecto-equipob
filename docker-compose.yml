@@ -25,8 +25,11 @@ services:
             - "3311:27019"
         restart: always
         volumes:
-            - db_volume_public_library:/var/lib/mongo
+            - db_volume_public_library:/SpotyMe/db
+            - ../db/PublicLibrary.js:/docker-entrypoint-initdb.d/PublicLibrary.js:ro
+        command: mongod --auth
         environment:
+            MONGO_INITDB_DATABASE: PublicLibrary
             MONGO_INITDB_ROOT_USERNAME: spotymeAdmin
             MONGO_INITDB_ROOT_PASSWORD: proyectoredes
         container_name: db_public_library
@@ -37,8 +40,11 @@ services:
             - "3312:27019"
         restart: always
         volumes:
-            - db_volume_private_library:/var/lib/mongo
+            - db_volume_private_library:/SpotyMe/db
+            - ../db/PrivateLibrary.js:/docker-entrypoint-initdb.d/PrivateLibrary.js:ro
+        command: mongod --auth
         environment:
+            MONGO_INITDB_DATABASE: PrivateLibrary
             MONGO_INITDB_ROOT_USERNAME: spotymeAdmin
             MONGO_INITDB_ROOT_PASSWORD: proyectoredes
         container_name: db_private_library
