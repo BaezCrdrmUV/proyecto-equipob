@@ -36,13 +36,13 @@ namespace MSPublicLibrary.Controllers
             JObject returnObject;
             List<Music> music = null;
             
-            if(String.IsNullOrEmpty(address) && String.IsNullOrEmpty(id))
+            if(String.IsNullOrWhiteSpace(address) && String.IsNullOrWhiteSpace(id))
             {
                 music = await _musicService.ShowMusic();
             } 
             else
             {
-                if(String.IsNullOrEmpty(address))
+                if(String.IsNullOrWhiteSpace(address))
                 {
                     music = await _musicService.SearchMusicById(id);
                 }
