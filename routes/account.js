@@ -33,7 +33,7 @@ router.post("/loginMobile", async (req, res) => {
         res.send(values);
     })
     .catch(error => {
-        res.send("Account/loginMovile", error);
+        res.send("Account/login", error);
     })
 })
 
