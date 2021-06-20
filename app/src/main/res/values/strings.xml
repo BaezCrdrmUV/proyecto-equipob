@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Sistema SpotyMe</string>
+    <string name="title_activity_login">SpotyMe</string>
+    <string name="title_activity_register_user">Registro de Cuenta</string>
+    <string name="prompt_username">Apodo</string>
+    <string name="prompt_email">Correo</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="prompt_spotyme">SpotyMe</string>
+    <string name="action_sign_in">Iniciar Sesión</string>
+    <string name="action_register">Registrar Cuenta</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="title_activity_consulta_alumnos">ConsultaAlumnosActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_menu">MenuActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings1">Configuración 1</string>
+    <string name="action_settings2">Configuración 2</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_private_library">Biblioteca Privada</string>
+    <string name="menu_public_library">Biblioteca Pública</string>
+</resources>
