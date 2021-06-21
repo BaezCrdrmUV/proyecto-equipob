@@ -56,8 +56,8 @@ namespace MSPrivateLibrary.Controllers
             if (albums.Count < 1)
             {
                 string errorMessage  = "No album was found";
-                returnObject = JSONFormatter.ErrorMessageFormatter(errorMessage);
-                return BadRequest(returnObject);
+                returnObject = JSONFormatter.SuccessMessageFormatter(errorMessage, albums);
+                return Ok(returnObject);
             }
 
             returnObject = JSONFormatter.SuccessMessageFormatter("Album found", albums);
