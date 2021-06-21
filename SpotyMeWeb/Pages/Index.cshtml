@@ -90,22 +90,24 @@
                 {
                     if(data.data.message == "Login successful")
                     {
-                    debugger;
-                    var id = data.data.result.AccountId;
-                    var user = data.data.result.Username;
-                    var mail = data.data.result.Email;
-                    var passwdId = data.data.result.Passwords[0].PasswordId;
-                    sessionStorage.setItem("id",id);
-                    sessionStorage.setItem("username",user);
-                    sessionStorage.setItem("email",mail);
-                    sessionStorage.setItem("passwordId",passwdId);
-                    alert("Inicio de sesion Exitoso");
-                    window.location.pathname = '/SpotyMeHome';
+                    
+                        var id = data.data.result.AccountId;
+                        var user = data.data.result.Username;
+                        var mail = data.data.result.Email;
+                        var passwdId = data.data.result.Passwords[0].PasswordId;
+                        sessionStorage.setItem("id",id);
+                        sessionStorage.setItem("username",user);
+                        sessionStorage.setItem("email",mail);
+                        sessionStorage.setItem("passwordId",passwdId);
+                        alert("Inicio de sesion Exitoso");
+                        window.location.pathname = '/SpotyMeHome';
                     }
                     else
                     {
                         if(data.data.message == "Welcome Admin")
                         {
+                            var mail = data.data.result.Email;
+                            sessionStorage.setItem("email",mail);
                             alert("Inicio de sesion Exitoso");
                             window.location.pathname = '/AdminMenu';
                         }
@@ -117,7 +119,14 @@
                 }
                 else
                 {
-                    logErrorMessage.innerHTML = "Ha ingresado mail o contraseña incorrecta"
+                    if(data.data.message == "This user has been banned and cannot access SpotyMe")
+                    {
+                        logErrorMessage.innerHTML = "Esta cuenta ha sido baneada"
+                    }
+                    else
+                    {
+                        logErrorMessage.innerHTML = "Ha ingresado mail o contraseña incorrecta"
+                    }
                 }
             }
             else

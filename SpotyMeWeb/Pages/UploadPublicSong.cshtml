@@ -131,6 +131,12 @@
 
 
     window.onload =function(){
+        if(sessionStorage.getItem("id") == null || sessionStorage.getItem("id") == "")
+            {
+              window.location.pathname = '/Index'
+            }
+            else
+            {
         let url = "http://localhost:4000/Publiclibrary/SearchGenre";
             fetch(url,{
             method: 'GET',
@@ -185,6 +191,7 @@
                         .catch(function(error){
                             console.error(error);
                         });
+            }
     }
 
 
@@ -195,12 +202,17 @@
         && imagenMensaje != "Aun no ha seleccionado una Imagen")
         {
                 var i = 0;
-                albumArraySearch.result.forEach((value) =>{
+                debugger;
+                if(albumArraySearch.message != "No album was found")
+                {
+                    albumArraySearch.result.forEach((value) =>{
                     if(albumArraySearch.result[i].Name === albumInput.value){
                         idAlbum = albumArraySearch.result[i].Id;
                     }
                     i++
-                });
+                    });
+                }
+                
                 if(idAlbum === "No")
                 {
                     var myHeaders = new Headers();

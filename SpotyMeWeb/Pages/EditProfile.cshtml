@@ -45,8 +45,15 @@
 
     window.onload = function ()
     {
-      document.getElementById('usernameInput').value = username;
-      document.getElementById('mailInput').value = eMail;
+        if(id == null || id == "")
+        {
+          window.location.pathname = '/Index'
+        }
+        else
+        {
+            document.getElementById('usernameInput').value = username;
+            document.getElementById('mailInput').value = eMail;
+        }
     }
 
     function updateAcc(){

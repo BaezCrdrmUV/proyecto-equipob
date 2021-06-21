@@ -11,11 +11,16 @@
   <a href="#" id="checkPrivate">Biblioteca privada</a>
   <a href="#" id="uploadSong">Subir cancion publica</a>
   <a href="#" id="uploadSongPrivate">Subir cancion privada</a>
-    <div class="container" style="margin-top: 100%;">
+  <button type="button" class="cancelbtn" style ="margin-left: 10%; width: 80%; margin-top: 80%; height: 40px;" onclick="closeSession()">Cerrar Sesion</button>
+    <div class="container" style="margin-top: 10%;">
             &copy; 2021 - SpotyMeWeb
     </div>
 </div>
 
+<div>
+  <label for="uname" class="label" style ="margin-left: 15%; font-size: 20px;"><b>*Buscar cancion :</b></label>
+  <input  type="text"  maxlength="50" id="searchSongText" style="height: 40px;"><button type="button" style ="margin-left: 0%; width: 10%; margin-top: 1%; height: 40px;" onclick="searchSong()">Buscar</button>
+</div>
 
 <div class="grid-container" style="margin-left: 2%; margin-top: 2%;" id="app">
 
@@ -62,6 +67,7 @@
 
 </body>
 
+<link rel="stylesheet" href="~/css/SpotyMe.css" />
 <link rel="stylesheet" href="~/css/Header.css" />
 <link rel="stylesheet" href="~/css/MusicPlayer.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -82,6 +88,7 @@
     const upPrivateSongBtn = document.getElementById("uploadSongPrivate");
     const playerSongName = document.getElementById("playerSongName");
     const tmpl = $('#item_template').html();
+    var searchSongText = document.getElementById("searchSongText");
     var audio = document.getElementById('audio');
     var noSongMessage = document.getElementById('noSongMessage');
     var source = document.getElementById('audioSource');
@@ -126,6 +133,22 @@
     function privateLibraryPage()
     {
         window.location.pathname = '/PrivateLibrary'
+    };
+
+    function searchSong()
+    {
+        sessionStorage.setItem("songForSearchText",searchSongText.value);
+        window.location.pathname = '/SongSearch'
+    };
+
+    function closeSession()
+    {
+      sessionStorage.setItem("id","");
+      sessionStorage.setItem("username","");
+      sessionStorage.setItem("email","");
+      sessionStorage.setItem("passwordId","");
+      alert("Hasta luego");
+      window.location.pathname = '/Index';
     };
 
     function playSong(idButton)
@@ -179,6 +202,12 @@
     
 
     window.onload = function(){
+            if(id == null || id=="")
+            {
+              window.location.pathname = '/Index'
+            }
+            else
+            {
             let url = "http://localhost:4000/Publiclibrary/SearchSong";
             fetch(url,{
             method: 'GET',
@@ -220,7 +249,7 @@
         .catch(function(error){
             console.error(error);
         });
-        
+            }
     }
 
     function obtenerAlbum(idAlbum, i,idSong){

@@ -1,18 +1,19 @@
 @page
-@model PrivateLibraryModel
+@model SongSearch
 
 <body style="background-color: #292929;" >
   <div>
-    <h1 style="align-items: top; margin-left: 40%; font-size:31px;">Biblioteca privada</h1>
+    <h1 style="align-items: top; margin-left: 40%; font-size:31px;">Canciones encontradas</h1>
   </div>
 
-<h1 style="align-items: top; margin-left: 35%; font-size:20px;" id="noSongMessage"></h1>
+<h1 style="align-items: top; margin-left: 40%; font-size:20px;" id="noSongMessage"></h1>
 <div class="grid-container" style="margin-left: 18%; margin-top: 2%; width:1000px">
     <br/><br/>
         <ul id="thelist">
     </ul>
 </div>
 </body>
+
 
 <button style="visibility: hidden; margin-left: 33%; width: 40%; margin-top: 1%; height: 5px;"></button>
 
@@ -22,8 +23,8 @@
 <audio controls style="width: 800px; margin-left: 20%; margin-top: 2%;" id="audio" >
  <source id="audioSource" type="audio/mpeg">
 </audio>
+    <button type="button" class="cancelbtn" style ="margin-left: 30%; width: 40%; margin-top: 2%;" onclick="regresar()">Regresar</button>
 
-<button type="button" class="cancelbtn" style ="margin-left: 30%; width: 40%; margin-top: 1%;" id="cancelButton">Regresar</button>
 <footer style="margin-top: 2%;"> 
     <div class="container">
             &copy; 2021 - SpotyMeWeb
@@ -36,45 +37,42 @@
 
 @section Scripts {
 <script>
-const cancelButton = document.getElementById("cancelButton");
-const playerSongName = document.getElementById("playerSongName");
-var counter= 0;
-var audio = document.getElementById('audio');
-var source = document.getElementById('audioSource');
-var noSongMessage = document.getElementById('noSongMessage');
-var songListGet;
+    const cancelButton = document.getElementById("cancelButton");
+    const playerSongName = document.getElementById("playerSongName");
+    var noSongMessage = document.getElementById('noSongMessage');
+    var nameSongSearch = sessionStorage.getItem('songForSearchText');
+    var counter= 0;
+    var audio = document.getElementById('audio');
+    var source = document.getElementById('audioSource');
+    var songListGet;
 
-    cancelButton.addEventListener('click', () => 
-    {
-        cancelAction();
-    });
 
-    function cancelAction()
+    function regresar()
     {
         window.location.pathname = '/SpotyMeHome'
     }
 
-function addelement(songName,artist,id, songid) 
-{
-    var completelist= document.getElementById("thelist");
+    function addelement(songName,artist,id,upId) 
+    {
+        var completelist= document.getElementById("thelist");
 
-    completelist.innerHTML += "<li style='margin-left: -10%; font-size: 25px; margin-top:5%;'>" + songName +"///"+ artist+"." + "<button id='"+ id +
-    "'type='button'onclick='playSong(this)'style='margin-left: 10%;' class='fa fa-play'></button><button id='"+ songid + "' type='button'onclick='checkData(this)' style='margin-left: 3%;'class='fa fa-info'></button></li>";
-    
-    counter++;
-}
+        completelist.innerHTML += "<li class='label' style='margin-left: -10%; font-size: 25px; margin-top:5%;'>" + songName +"///"+ artist+"." + "<button id='"+ id +
+        "'type='button'onclick='playSong(this)'style='margin-left: 10%;' class='fa fa-play'></button><button id='"+ upId + "' type='button'onclick='checkData(this)' style='margin-left: 3%;'class='fa fa-info'></button></li></li>";
+        
+        counter++;
+    }
 
     function checkData(idSong)
     {
         sessionStorage.setItem("idSongCheck",idSong.id);
-        sessionStorage.setItem("libraryType","Private");
+        sessionStorage.setItem("libraryType","PublicSearch");
         window.location.pathname = '/MusicData'
     }
 
-function playSong(idButton)
-{
-    var id = idButton.id;
-    let url = "http://localhost:4000/Privatelibrary/SearchMusic?id="+id;
+    function playSong(idButton)
+    {
+        var id = idButton.id;
+        let url = "http://localhost:4000/Publiclibrary/SearchMusic?id="+id;
             fetch(url,{
             method: 'POST',
             headers:{
@@ -113,18 +111,17 @@ function playSong(idButton)
         .catch(function(error){
             console.error(error);
         });
-}
+    }
 
 
-    window.onload = function()
-    {
+    window.onload = function(){
             if(sessionStorage.getItem("id") == null || sessionStorage.getItem("id") == "")
             {
               window.location.pathname = '/Index'
             }
             else
             {
-                let url = "http://localhost:4000/Privatelibrary/SearchSong?uploader="+sessionStorage.getItem("id");
+                let url = "http://localhost:4000/PublicLibrary/SearchSong?title=" + nameSongSearch;
                 fetch(url,{
                 method: 'GET',
                 headers:{
@@ -137,19 +134,19 @@ function playSong(idButton)
                     debugger;
                     let data = await response.json();
                     songListGet = data;
-                    var i = 0;
-                    if(data.data.result == null)
+                    if(data.message == "No song was found")
                     {
-                        noSongMessage.innerHTML = "Aun no ha ingresado canciones a su biblioteca privada"
+                        noSongMessage.innerHTML = "No existen canciones con ese nombre"
                     }
                     else
                     {
-                        data.data.result.forEach((value) =>{
-                    addelement( data.data.result[i].Title,data.data.result[i].Composer, data.data.result[i].MultimediaId,data.data.result[i].Id);
-                        i++;
-                    });
+                        var i = 0;
+                        data.result.forEach((value) =>{
+                            debugger;
+                        addelement( data.result[i].Title,data.result[i].Composer, data.result[i].MultimediaId,data.result[i].Id);
+                            i++;
+                        });
                     }
-                    
                 }
                 else
                 {
