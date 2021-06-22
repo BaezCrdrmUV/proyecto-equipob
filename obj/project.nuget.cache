@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "d+7ug4mK0qhi+EwOnOVH7tkVQe1IkFAWHsbrfgZm659zYEao6jOKqgKKi3FAR7yDziPLBxPJWaUUdUQylANbeg==",
+  "dgSpecHash": "V4XGq9gQCyOMHeJ6bF93ussx16t71GsQl1/mOnaY03wovgqyAQaUMXLvfh5YeAMNBxU/1Y+oXjxOSOf4wGaBig==",
   "success": true,
-  "projectFilePath": "c:\\Users\\parke\\Desktop\\SPP\\SpotyMe\\MSAccount\\MSCuenta.csproj",
+  "projectFilePath": "C:\\Users\\parke\\Desktop\\SPP\\SpotyMe\\MSAccount\\MSAccount.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\parke\\.nuget\\packages\\bouncycastle.netcore\\1.8.5\\bouncycastle.netcore.1.8.5.nupkg.sha512",
     "C:\\Users\\parke\\.nuget\\packages\\google.protobuf\\3.11.4\\google.protobuf.3.11.4.nupkg.sha512",

@@ -2016,11 +2016,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\parke\\Desktop\\SPP\\SpotyMe\\MSAccount\\MSCuenta.csproj",
-      "projectName": "MSCuenta",
-      "projectPath": "c:\\Users\\parke\\Desktop\\SPP\\SpotyMe\\MSAccount\\MSCuenta.csproj",
+      "projectUniqueName": "C:\\Users\\parke\\Desktop\\SPP\\SpotyMe\\MSAccount\\MSAccount.csproj",
+      "projectName": "MSAccount",
+      "projectPath": "C:\\Users\\parke\\Desktop\\SPP\\SpotyMe\\MSAccount\\MSAccount.csproj",
       "packagesPath": "C:\\Users\\parke\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\parke\\Desktop\\SPP\\SpotyMe\\MSAccount\\obj\\",
+      "outputPath": "C:\\Users\\parke\\Desktop\\SPP\\SpotyMe\\MSAccount\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
